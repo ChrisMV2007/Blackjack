@@ -10,7 +10,7 @@ time.sleep(3.25)
 def Ace(repeated=False):  # For when an ace is drawn.
     if repeated:  # For invalid values.
         print("Please enter either 1 or 11. ")
-    val = input("You drew an ace! What would you like it to be worth (1 or 11)? ")
+    val = input("You drew an ace! What would you like it to be worth (1 or 11)? \n")
     return int(val) if val == "1" or val == "11" else ace(repeated=True)  # Recursion for invalid values.
 
 
@@ -53,7 +53,7 @@ def Hit_Stand(player_score):
         new_card = Card()
         player_score += new_card.value
         print(f"The dealer gave you the {repr(new_card)}. ")
-        if score > 21:
+        if player_score > 21:
             return "Busted"
         Hit_Stand(player_score)
     else:
@@ -80,8 +80,8 @@ def bet_func(balance, repeat=False):
     if repeat:
         print("Please enter a number and make sure it is within your balance.")
     bet_val = input("How much would you like to bet? ")
-    return int(bet_val) if any(char.isdigit() for char in bet_val) and int(bet_val) <= balance else bet(balance,
-                                                                                                        repeat=True)
+    return int(bet_val) if any(char.isdigit() for char in bet_val) and int(bet_val) <= balance else bet_func(balance,
+                                                                                                             repeat=True)
 
 
 def double_down(balance, bet, repeat=False):
@@ -109,8 +109,7 @@ def split_double_down(hand1, hand2, bet, balance, repeat=False):
         return hand1, hand2, bet, balance, double, True
     if double == "both":
         print(f"The bet on both hands were doubled to {bet}, and the total bet is now {bet * 2}.")
-        hands = [hand1, hand2]
-        hands[int(double) - 1].bet *= 2
+        hand1.bet, hand2.bet = hand1.bet * 2, hand2.bet * 2
         return hand1, hand2, bet, balance, double, True
     if double == "no":
         return hand1, hand2, bet, balance, double, True
@@ -119,13 +118,13 @@ def split_double_down(hand1, hand2, bet, balance, repeat=False):
 
 
 def split(card1, card2, bet, balance, repeat=False):
-    if card1 != card2 or bet * 2 > balance:
+    if card1.text_value != card2.text_value or bet * 2 > balance:
         hand1 = Split_Hand(card1, card2, bet)
-        return hand1, False, bet, balance, None, False
+        return hand1, False, bet, balance, False, False
     if repeat:
         print("Please enter either 'yes' or 'no'. ")
 
-    user_input = input("Would you like to split your hand? ").lower()
+    user_input = input("You have 2 of the same card. Would you like to split your hand? ").lower()
     if user_input == "yes":
         bet *= 2
         print("The dealer splits your hand and deals 2 new cards.")
@@ -139,7 +138,7 @@ def split(card1, card2, bet, balance, repeat=False):
         return split_double_down(hand1, hand2, bet, balance)
     elif user_input == "no":
         hand1 = Split_Hand(card1, card2, bet)
-        return hand1, False, bet, balance, None, False
+        return hand1, False, bet, balance, False, False
     else:
         split(card1, card2, bet, balance, repeat=True)
 
@@ -173,17 +172,18 @@ def Split_Winner_Declaration(hand1, hand2, dealer_score, bet_amount, balance):
     return balance
 
 
-def Dealer_Draw(card3, card4, dealer_score, repeat=False):
+def Dealer_Draw(card4, dealer_score, repeat=False):
     if not repeat:
         print(f"The dealer reveals his second card to be the {repr(card4)}. ")
     if dealer_score >= 17:
         print("The dealer doesn't draw further as his score is greater than 17. ")
         return dealer_score
     new_card = Card(dealer_card=True, dealer_score=dealer_score)
+    dealer_score += new_card.value
     time.sleep(1.5)
     print(f"The dealer draws the {repr(new_card)}.")
     time.sleep(1.5)
-    Dealer_Draw(None, None, dealer_score, repeat=True)
+    Dealer_Draw(None, dealer_score, repeat=True)
 
 
 def Winner_Declaration(balance, bet_amount, dealer_score, player_score):
@@ -234,8 +234,8 @@ def Blackjack(balance):
     hand1, hand2, bet, balance, double, split_check = split(card1, card2, bet_amount, balance)
     if not split_check:
         card1, card2 = hand1.card1, hand1.card2
-    bet_amount, bet_change = double_down(balance, bet_amount)
-    if bet_change:
+        bet_amount, bet_change = double_down(balance, bet_amount)
+    if not split_check and bet_change:
         print(f"The bet has risen to {bet_amount}. ")
 
     # Checks for Blackjack.
@@ -254,7 +254,7 @@ def Blackjack(balance):
             play_again_func(balance)
 
     # Dealer reveals his card, draws, and declares a winner. Offers to play again (unless player has no money).
-    dealer_score = Dealer_Draw(card3, card4, dealer_score)
+    dealer_score = Dealer_Draw(card4, dealer_score)
     time.sleep(2)
     if not split_check:
         balance = Winner_Declaration(balance, bet_amount, dealer_score, player_score)
