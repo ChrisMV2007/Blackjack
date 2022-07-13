@@ -11,7 +11,7 @@ def Ace(repeated=False):  # For when an ace is drawn.
     if repeated:  # For invalid values.
         print("Please enter either 1 or 11. ")
     val = input("You drew an ace! What would you like it to be worth (1 or 11)? \n")
-    return int(val) if val == "1" or val == "11" else ace(repeated=True)  # Recursion for invalid values.
+    return int(val) if val == "1" or val == "11" else Ace(repeated=True)  # Recursion for invalid values.
 
 
 text_values = ["Two of", "Three of", "Four of", "Five of", "Six of", "Seven of", "Eight of", "Nine of", "Ten of",
@@ -242,7 +242,7 @@ def Blackjack(balance):
     if player_score == 21:
         time.sleep(1)
         print("Blackjack! You got 21 with your starting hand and win 1.5x your bet. ")
-        play_again(balance + (bet_amount * 1.5))
+        play_again_func(balance + (bet_amount * 1.5))
     if not split_check:
         hit_stand_results = Hit_Stand(player_score)
 
