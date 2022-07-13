@@ -2,8 +2,8 @@ from itertools import product
 import random
 import time
 
-print("If you are using this file you are likely running it through my Replit. For the
-      " blackjack rules, see the 'README.md' file in my GitHub or Replit repository.")
+print("If you are using this file you are likely running it through my Replit. For the blackjack rules, see the "
+      "'README.md' file in my GitHub or Replit repository.")
 time.sleep(3.25)
 
 
@@ -47,7 +47,9 @@ class Split_Hand:
         self.score = card1.value + card2.value
 
 
-def Hit_Stand(player_score):
+def Hit_Stand(player_score, repeat=False):
+    if repeat:
+        print("Please enter either hit or stand.")
     user_input = input("Would you like to 'hit' or 'stand'? ").lower()
     if user_input == "hit":
         new_card = Card()
@@ -56,9 +58,11 @@ def Hit_Stand(player_score):
         if player_score > 21:
             return "Busted"
         Hit_Stand(player_score)
-    else:
+    elif user_input == "stand":
         print(f"Your score will stay at {player_score}.")
         return player_score
+    else:
+        Hit_Stand(player_score, repeat=True)
 
 
 def play_again_func(balance):
@@ -215,7 +219,7 @@ def Winner_Declaration(balance, bet_amount, dealer_score, player_score):
 
 def Blackjack(balance):
     # Set the amount that you are betting.
-    print(f"Your balance is {balance}")
+    print(f"Your balance is {balance}.")
     bet_amount = bet_func(balance)
     print(f"You bet ${bet_amount}.")
     time.sleep(1.5)
@@ -257,7 +261,7 @@ def Blackjack(balance):
     dealer_score = Dealer_Draw(card4, dealer_score)
     time.sleep(2)
     if not split_check:
-        balance = Winner_Declaration(balance, bet_amount, dealer_score, player_score)
+        balance = Winner_Declaration(balance, bet_amount, dealer_score, hit_stand_results)
     else:
         Split_Winner_Declaration(hand1, hand2, dealer_score, hand1.bet + hand2.bet, balance)
     play_again_func(balance)
