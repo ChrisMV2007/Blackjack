@@ -183,7 +183,7 @@ def Dealer_Draw(card4, dealer_score, repeat=False):
     time.sleep(1.5)
     print(f"The dealer draws the {repr(new_card)}.")
     time.sleep(1.5)
-    Dealer_Draw(None, dealer_score, repeat=True)
+    return Dealer_Draw(None, dealer_score, repeat=True)
 
 
 def Winner_Declaration(balance, bet_amount, dealer_score, player_score):
