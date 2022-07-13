@@ -2,8 +2,8 @@ from itertools import product
 import random
 import time
 
-print("If you are using this file you are likely running it through my GitHub repository. For the blackjack rules,"
-      "see the 'README.md' file.")
+print("If you are using this file you are likely running it through my Replit. For the
+      " blackjack rules, see the 'README.md' file in my GitHub or Replit repository.")
 time.sleep(3.25)
 
 
